@@ -218,3 +218,19 @@
 - Property tests validate universal correctness properties from the design document
 - Unit tests validate specific examples and edge cases
 - 初期開発（Phase 1〜2）ではJR山手線・中央線など1〜2路線に限定し、Phase 3以降で段階的に路線を追加する
+
+## Git運用ルール
+
+### コミット・プッシュ
+
+- 各サブタスク完了時に必ずコミット→プッシュする
+- バグ修正やリファクタリングなど、人間の一般的なコミット粒度で適宜コミットする
+- コミットメッセージは日本語で記述する
+- コミットメッセージの形式: `feat: 〇〇を実装`, `fix: 〇〇を修正`, `test: 〇〇のテストを追加`, `refactor: 〇〇をリファクタリング`
+
+### ブランチ運用
+
+- 各フェーズごとにfeatureブランチを作成する（例: `feature/phase-1-setup`, `feature/phase-2-reachability`）
+- featureブランチ上で開発を進め、フェーズのチェックポイント完了後にmainブランチへマージする
+- mainブランチへのマージはリベースを使用する（`git rebase main` → `git merge --ff-only`）
+- featureブランチ作成前にmainブランチを最新化する
