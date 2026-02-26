@@ -1,0 +1,97 @@
+.station-selector {
+  margin-bottom: 1.5rem;
+}
+
+.station-selector-label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #e0e0e0;
+}
+
+.station-selector-input-wrapper {
+  position: relative;
+}
+
+.station-selector-input {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #444;
+  border-radius: 4px;
+  background-color: #1a1a1a;
+  color: #fff;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.station-selector-input:focus {
+  border-color: #9acd32;
+}
+
+.station-selector-input::placeholder {
+  color: #666;
+}
+
+.station-selector-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 0.25rem;
+  background-color: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.station-selector-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.station-selector-item {
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.station-selector-item:hover {
+  background-color: #3a3a3a;
+}
+
+.station-name {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+}
+
+.station-kana {
+  font-size: 0.85rem;
+  color: #999;
+}
+
+.station-selector-no-results {
+  padding: 1rem;
+  text-align: center;
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.station-selector-selected {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background-color: #1a1a1a;
+  border: 1px solid #9acd32;
+  border-radius: 4px;
+  color: #9acd32;
+  font-size: 0.9rem;
+}

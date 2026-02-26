@@ -22,7 +22,7 @@
     - データ読み込み失敗時のエラーハンドリングを実装する
     - _Requirements: 1.1, 3.6_
 
-  - [ ] 1.3 StationSelector コンポーネントの実装
+  - [x] 1.3 StationSelector コンポーネントの実装
     - `src/components/StationSelector.tsx` を作成する
     - `filterStations` 関数を `src/utils/filterStations.ts` に実装する（漢字・かな部分一致検索）
     - テキスト入力による候補リストのドロップダウン表示を実装する
