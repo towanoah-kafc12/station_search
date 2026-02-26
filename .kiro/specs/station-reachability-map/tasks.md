@@ -41,7 +41,7 @@
     - 範囲外入力時のリアルタイムエラーメッセージ表示を実装する
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6_
 
-  - [ ]\* 1.6 Property 3: 検索条件バリデーションテスト
+  - [x] 1.6 Property 3: 検索条件バリデーションテスト
     - **Property 3: 検索条件バリデーション**
     - fast-checkで任意の数値を生成し、`validateCondition`が範囲内のみ`isValid: true`を返し、範囲外では適切なエラーメッセージを含むことを検証する
     - **Validates: Requirements 2.3, 2.4, 2.6**
@@ -53,7 +53,7 @@
     - 出発駅マーカーの表示を実装する
     - _Requirements: 1.4, 4.6_
 
-  - [ ]\* 1.8 Property 2: 駅選択時の地図中心移動テスト
+  - [x] 1.8 Property 2: 駅選択時の地図中心移動テスト
     - **Property 2: 駅選択時の地図中心移動**
     - fast-checkで任意の座標を持つ駅を生成し、選択後の地図中心座標が駅の緯度・経度と一致することを検証する
     - **Validates: Requirements 1.3, 1.4, 6.5**
@@ -64,17 +64,17 @@
     - 条件変更時の即時反映（状態更新）を実装する
     - _Requirements: 2.5_
 
-  - [ ]\* 1.10 Property 4: 条件変更の即時反映テスト
+  - [-] 1.10 Property 4: 条件変更の即時反映テスト
     - **Property 4: 条件変更の即時反映**
     - fast-checkで任意の有効な`SearchCondition`を生成し、条件変更後のアプリケーション状態が変更値と一致することを検証する
     - **Validates: Requirements 2.5, 7.4**
 
-  - [ ]\* 1.11 Property 12: デフォルト全路線選択テスト
+  - [~] 1.11 Property 12: デフォルト全路線選択テスト
     - **Property 12: デフォルト全路線選択**
     - fast-checkで任意の路線データセットを生成し、条件パネルの初期状態で全路線が選択状態であることを検証する
     - **Validates: Requirements 7.3**
 
-- [ ] 2. Phase 1 チェックポイント
+- [x] 2. Phase 1 チェックポイント
   - Ensure all tests pass, ask the user if questions arise.
   - 駅選択、条件入力、基本地図表示が動作することを確認する
 
