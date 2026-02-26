@@ -1,13 +1,18 @@
-import { useState, useEffect } from "react";
-import type { Station, SearchCondition } from "./types";
+import { useState, useEffect, useMemo } from "react";
+import type { Station, SearchCondition, Line } from "./types";
+import type { ReachableStation } from "./types/ReachableStation";
 import { StationSelector } from "./components/StationSelector";
 import { ConditionPanel } from "./components/ConditionPanel";
 import { MapComponent } from "./components/MapComponent";
-import { loadStations } from "./services/dataLoader";
+import { loadStations, loadLines } from "./services/dataLoader";
+import { buildGraph } from "./services/graphService";
+import { findReachableStations } from "./services/reachabilityEngine";
+import { generateRouteOverlays } from "./utils/routeOverlay";
 import "./App.css";
 
 function App() {
   const [stations, setStations] = useState<Station[]>([]);
+  const [lines, setLines] = useState<Line[]>([]);
   const [selectedStation, setSelectedStation] = useState<Station | null>(null);
   const [searchCondition, setSearchCondition] = useState<SearchCondition>({
     maxTravelTime: 30,
@@ -22,12 +27,18 @@ function App() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const stationsData = await loadStations();
+        const [stationsData, linesData] = await Promise.all([
+          loadStations(),
+          loadLines(),
+        ]);
         setStations(stationsData);
+        setLines(linesData);
         setError(null);
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "不明なエラーが発生しました",
+          err instanceof Error
+            ? err.message
+            : "路線データを取得できませんでした。再度お試しください",
         );
       } finally {
         setLoading(false);
@@ -46,6 +57,36 @@ function App() {
   const handleConditionChange = (condition: SearchCondition) => {
     setSearchCondition(condition);
   };
+
+  // グラフを構築（メモ化）
+  const graph = useMemo(() => {
+    if (stations.length === 0 || lines.length === 0) {
+      return null;
+    }
+    return buildGraph(stations, lines);
+  }, [stations, lines]);
+
+  // 到達可能駅を算出（メモ化）
+  const reachableStations = useMemo<ReachableStation[]>(() => {
+    if (!selectedStation || !graph) {
+      return [];
+    }
+
+    try {
+      return findReachableStations(graph, selectedStation.id, searchCondition);
+    } catch (err) {
+      console.error("到達可能範囲の算出に失敗しました:", err);
+      return [];
+    }
+  }, [selectedStation, searchCondition, graph]);
+
+  // 路線オーバーレイを生成（メモ化）
+  const routeOverlays = useMemo(() => {
+    if (lines.length === 0) {
+      return [];
+    }
+    return generateRouteOverlays(lines, reachableStations);
+  }, [lines, reachableStations]);
 
   // 地図の中心座標を計算
   const mapCenter: [number, number] = selectedStation
@@ -89,7 +130,13 @@ function App() {
           />
         </div>
         <div className="map-container">
-          <MapComponent center={mapCenter} departureStation={selectedStation} />
+          <MapComponent
+            center={mapCenter}
+            departureStation={selectedStation}
+            reachableStations={reachableStations}
+            maxTravelTime={searchCondition.maxTravelTime}
+            routeOverlays={routeOverlays}
+          />
         </div>
       </main>
     </div>

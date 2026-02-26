@@ -27,7 +27,7 @@
     - `filterStations` 関数を `src/utils/filterStations.ts` に実装する（漢字・かな部分一致検索）
     - テキスト入力による候補リストのドロップダウン表示を実装する
     - 該当なし時に「該当する駅が見つかりません」メッセージを表示する
-    - _Requirements: 1.1, 1.2, 1.3, 1.5_
+    - _Requirements: 1.1, 1.2, 1.3, 1.5_ ｗ
 
   - [x] 1.4 Property 1: 駅名フィルタリングの正確性テスト
     - **Property 1: 駅名フィルタリングの正確性**
@@ -64,12 +64,12 @@
     - 条件変更時の即時反映（状態更新）を実装する
     - _Requirements: 2.5_
 
-  - [-] 1.10 Property 4: 条件変更の即時反映テスト
+  - [x] 1.10 Property 4: 条件変更の即時反映テスト
     - **Property 4: 条件変更の即時反映**
     - fast-checkで任意の有効な`SearchCondition`を生成し、条件変更後のアプリケーション状態が変更値と一致することを検証する
     - **Validates: Requirements 2.5, 7.4**
 
-  - [~] 1.11 Property 12: デフォルト全路線選択テスト
+  - [x] 1.11 Property 12: デフォルト全路線選択テスト
     - **Property 12: デフォルト全路線選択**
     - fast-checkで任意の路線データセットを生成し、条件パネルの初期状態で全路線が選択状態であることを検証する
     - **Validates: Requirements 7.3**
@@ -78,36 +78,36 @@
   - Ensure all tests pass, ask the user if questions arise.
   - 駅選択、条件入力、基本地図表示が動作することを確認する
 
-- [ ] 3. Phase 2: 到達可能範囲算出とマーカー表示
-  - [ ] 3.1 GTFSデータからの駅間所要時間算出の検証
+- [x] 3. Phase 2: 到達可能範囲算出とマーカー表示
+  - [x] 3.1 GTFSデータからの駅間所要時間算出の検証
     - `scripts/convertGtfs.ts`の所要時間算出ロジックが正しく動作することを検証する
     - `stop_times.txt`の`departure_time`/`arrival_time`差分から隣接駅間の所要時間（中央値）が正しく算出されることを確認する
     - _Requirements: 3.4_
 
-  - [ ] 3.2 GraphService の実装（graphologyベース）
+  - [x] 3.2 GraphService の実装（graphologyベース）
     - `src/services/graphService.ts` を作成する
     - `buildGraph` 関数を実装し、駅をノード、駅間接続をエッジ（移動時間を重み）としたgraphologyグラフを構築する
     - 同一駅での路線間乗り換えエッジ（固定5分）を追加する
     - _Requirements: 3.4, 3.5_
 
-  - [ ]\* 3.3 Property 6: グラフ構築とエッジ重みの正確性テスト
+  - [x] 3.3 Property 6: グラフ構築とエッジ重みの正確性テスト
     - **Property 6: グラフ構築とエッジ重みの正確性**
     - fast-checkで任意の路線データと時刻表データを生成し、`buildGraph`のエッジ`travelTime`が時刻表算出値と一致すること、乗り換えエッジが正しく生成されることを検証する
     - **Validates: Requirements 3.4, 3.5**
 
-  - [ ] 3.4 ReachabilityEngine の実装
+  - [x] 3.4 ReachabilityEngine の実装
     - `src/services/reachabilityEngine.ts` を作成する
     - `findReachableStations` 関数を実装し、graphologyのDijkstra探索で到達可能駅を算出する
     - `maxTravelTime`, `maxTransfers`, `excludedLines` の制約を適用する
     - 各到達可能駅の移動時間・乗り換え回数・経路を返す
     - _Requirements: 3.1, 3.2, 3.3, 3.5_
 
-  - [ ]\* 3.5 Property 5: 到達可能駅算出の正確性テスト
+  - [x] 3.5 Property 5: 到達可能駅算出の正確性テスト
     - **Property 5: 到達可能駅算出の正確性**
     - fast-checkで任意のグラフ・出発駅・条件を生成し、返却される全駅が`travelTime <= maxTravelTime`かつ`transfers <= maxTransfers`を満たすこと、条件を満たす駅が漏れなく含まれることを検証する
     - **Validates: Requirements 3.1, 3.2, 3.3**
 
-  - [ ] 3.6 MapComponent にマーカー表示機能を追加
+  - [x] 3.6 MapComponent にマーカー表示機能を追加
     - 到達可能駅をマーカーとして地図上に表示する
     - `src/utils/colorScale.ts` を作成し、移動時間に応じた色分け関数を実装する（緑→黄→赤グラデーション）
     - マーカークリック時のポップアップ（駅名・移動時間・乗り換え回数）を実装する
@@ -124,18 +124,18 @@
     - fast-checkで任意の座標セットを生成し、計算されるバウンディングボックスが全座標を包含することを検証する
     - **Validates: Requirements 4.6**
 
-  - [ ] 3.9 App コンポーネントに到達可能範囲算出フローを結合
+  - [x] 3.9 App コンポーネントに到達可能範囲算出フローを結合
     - 出発駅と条件が揃った時点で`ReachabilityEngine`を呼び出し、結果をMapComponentに渡す
     - 条件変更時の再計算を実装する
     - データ取得失敗時のエラーメッセージ表示を実装する
     - _Requirements: 3.1, 3.6_
 
-- [ ] 4. Phase 2 チェックポイント
+- [x] 4. Phase 2 チェックポイント
   - Ensure all tests pass, ask the user if questions arise.
   - 出発駅選択→条件指定→到達可能駅のマーカー表示が一連の流れで動作することを確認する
 
-- [ ] 5. Phase 3: 路線オーバーレイと等時線
-  - [ ] 5.1 路線オーバーレイの生成と描画
+- [-] 5. Phase 3: 路線オーバーレイと等時線
+  - [x] 5.1 路線オーバーレイの生成と描画
     - `src/utils/routeOverlay.ts` を作成し、路線データから`RouteOverlay`を生成する関数を実装する
     - MapComponent に路線ポリラインの描画機能を追加する
     - 各路線を路線カラーで描画する

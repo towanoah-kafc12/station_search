@@ -5,3 +5,4 @@ export type { Operator } from "./Operator";
 export type { SearchCondition } from "./SearchCondition";
 export type { ValidationResult } from "./ValidationResult";
 export type { ReachableStation, RouteStep } from "./ReachableStation";
+export type { RouteOverlay } from "./RouteOverlay";
