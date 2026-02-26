@@ -34,7 +34,7 @@
     - fast-checkで任意の駅データセットと検索文字列を生成し、`filterStations`の返却結果が全て検索文字列を部分文字列として含むこと、含まない駅が返されないことを検証する
     - **Validates: Requirements 1.2**
 
-  - [ ] 1.5 ConditionPanel コンポーネントの実装
+  - [x] 1.5 ConditionPanel コンポーネントの実装
     - `src/components/ConditionPanel.tsx` を作成する
     - 最大移動時間（5〜120分）と最大乗り換え回数（0〜5回）の入力欄を実装する
     - `validateCondition` 関数を `src/utils/validateCondition.ts` に実装する
