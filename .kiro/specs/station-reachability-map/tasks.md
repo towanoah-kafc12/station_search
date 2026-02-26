@@ -134,7 +134,7 @@
   - Ensure all tests pass, ask the user if questions arise.
   - 出発駅選択→条件指定→到達可能駅のマーカー表示が一連の流れで動作することを確認する
 
-- [-] 5. Phase 3: 路線オーバーレイと等時線
+- [x] 5. Phase 3: 路線オーバーレイと等時線
   - [x] 5.1 路線オーバーレイの生成と描画
     - `src/utils/routeOverlay.ts` を作成し、路線データから`RouteOverlay`を生成する関数を実装する
     - MapComponent に路線ポリラインの描画機能を追加する
@@ -157,7 +157,7 @@
     - MapComponent に等時線ポリゴンの描画機能を追加する
     - _Requirements: 4.3_
 
-- [ ] 6. Phase 3 チェックポイント
+- [x] 6. Phase 3 チェックポイント
   - Ensure all tests pass, ask the user if questions arise.
   - 路線オーバーレイと等時線が地図上に正しく描画されることを確認する
 

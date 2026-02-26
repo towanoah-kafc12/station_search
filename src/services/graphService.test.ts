@@ -94,20 +94,20 @@ describe("GraphService", () => {
     it("エッジに正しい移動時間を設定する", () => {
       const graph = buildGraph(testStations, testLines);
 
-      const edge1 = graph.directedEdge("station1", "station2");
-      const attrs1 = graph.getEdgeAttributes(edge1);
+      const edges1 = graph.directedEdges("station1", "station2");
+      const attrs1 = graph.getEdgeAttributes(edges1[0]);
       expect(attrs1.travelTime).toBe(3);
 
-      const edge2 = graph.directedEdge("station2", "station3");
-      const attrs2 = graph.getEdgeAttributes(edge2);
+      const edges2 = graph.directedEdges("station2", "station3");
+      const attrs2 = graph.getEdgeAttributes(edges2[0]);
       expect(attrs2.travelTime).toBe(5);
     });
 
     it("エッジに路線IDを設定する", () => {
       const graph = buildGraph(testStations, testLines);
 
-      const edge = graph.directedEdge("station1", "station2");
-      const attrs = graph.getEdgeAttributes(edge);
+      const edges = graph.directedEdges("station1", "station2");
+      const attrs = graph.getEdgeAttributes(edges[0]);
       expect(attrs.lineId).toBe("line1");
     });
 

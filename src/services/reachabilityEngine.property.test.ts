@@ -86,7 +86,7 @@ describe("Property 5: 到達可能駅算出の正確性", () => {
     ({ stations, condition }) => {
       if (stations.length < 2) return;
 
-      const lines = [lineArbitrary(stations).sample()];
+      const lines = fc.sample(lineArbitrary(stations), 1);
       const graph = buildGraph(stations, lines);
 
       // 最初の駅を出発駅とする
@@ -127,7 +127,7 @@ describe("Property 5: 到達可能駅算出の正確性", () => {
     ({ stations, condition }) => {
       if (stations.length < 2) return;
 
-      const lines = [lineArbitrary(stations).sample()];
+      const lines = fc.sample(lineArbitrary(stations), 1);
       const graph = buildGraph(stations, lines);
 
       const departureStationId = stations[0].id;
@@ -168,7 +168,7 @@ describe("Property 5: 到達可能駅算出の正確性", () => {
     ({ stations, maxTravelTime, maxTransfers }) => {
       if (stations.length < 2) return;
 
-      const lines = [lineArbitrary(stations).sample()];
+      const lines = fc.sample(lineArbitrary(stations), 1);
       const graph = buildGraph(stations, lines);
 
       const departureStationId = stations[0].id;
@@ -212,7 +212,7 @@ describe("Property 5: 到達可能駅算出の正確性", () => {
     ({ stations, condition }) => {
       if (stations.length < 2) return;
 
-      const lines = [lineArbitrary(stations).sample()];
+      const lines = fc.sample(lineArbitrary(stations), 1);
       const graph = buildGraph(stations, lines);
 
       const departureStationId = stations[0].id;
