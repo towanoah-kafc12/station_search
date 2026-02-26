@@ -46,7 +46,7 @@
     - fast-checkで任意の数値を生成し、`validateCondition`が範囲内のみ`isValid: true`を返し、範囲外では適切なエラーメッセージを含むことを検証する
     - **Validates: Requirements 2.3, 2.4, 2.6**
 
-  - [ ] 1.7 MapComponent 基本実装
+  - [x] 1.7 MapComponent 基本実装
     - `src/components/MapComponent.tsx` を作成する
     - Leaflet + react-leaflet で地図を表示する（国土地理院タイルまたはOSMタイル）
     - 出発駅選択時に地図中心を駅座標に移動する機能を実装する
