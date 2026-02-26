@@ -6,8 +6,8 @@
 
 ## Tasks
 
-- [ ] 1. Phase 1: プロジェクトセットアップと基盤UI
-  - [ ] 1.1 Vite + React + TypeScript プロジェクトの初期化
+- [-] 1. Phase 1: プロジェクトセットアップと基盤UI
+  - [x] 1.1 Vite + React + TypeScript プロジェクトの初期化
     - `npm create vite@latest` でプロジェクトを作成し、依存パッケージをインストールする
     - `leaflet`, `react-leaflet`, `graphology`, `graphology-shortest-path`, `vitest`, `fast-check` を追加
     - `src/types/` ディレクトリに `Station`, `Line`, `Operator`, `SearchCondition`, `ValidationResult` 等の型定義ファイルを作成する
