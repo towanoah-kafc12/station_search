@@ -6,7 +6,7 @@
 
 ## Tasks
 
-- [-] 1. Phase 1: プロジェクトセットアップと基盤UI
+- [x] 1. Phase 1: プロジェクトセットアップと基盤UI
   - [x] 1.1 Vite + React + TypeScript プロジェクトの初期化
     - `npm create vite@latest` でプロジェクトを作成し、依存パッケージをインストールする
     - `leaflet`, `react-leaflet`, `graphology`, `graphology-shortest-path`, `vitest`, `fast-check` を追加
@@ -29,7 +29,7 @@
     - 該当なし時に「該当する駅が見つかりません」メッセージを表示する
     - _Requirements: 1.1, 1.2, 1.3, 1.5_
 
-  - [ ]\* 1.4 Property 1: 駅名フィルタリングの正確性テスト
+  - [x] 1.4 Property 1: 駅名フィルタリングの正確性テスト
     - **Property 1: 駅名フィルタリングの正確性**
     - fast-checkで任意の駅データセットと検索文字列を生成し、`filterStations`の返却結果が全て検索文字列を部分文字列として含むこと、含まない駅が返されないことを検証する
     - **Validates: Requirements 1.2**
