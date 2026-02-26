@@ -152,7 +152,7 @@
     - fast-checkで任意の路線と到達可能フラグを生成し、`isReachable: true`は通常色、`isReachable: false`は薄い色で表示されることを検証する
     - **Validates: Requirements 5.4**
 
-  - [ ] 5.4 等時線（アイソクロン）の描画
+  - [x] 5.4 等時線（アイソクロン）の描画
     - `src/utils/isochrone.ts` を作成し、到達可能駅の座標から等時線ポリゴンを生成する関数を実装する
     - MapComponent に等時線ポリゴンの描画機能を追加する
     - _Requirements: 4.3_

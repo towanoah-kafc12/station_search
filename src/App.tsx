@@ -8,6 +8,7 @@ import { loadStations, loadLines } from "./services/dataLoader";
 import { buildGraph } from "./services/graphService";
 import { findReachableStations } from "./services/reachabilityEngine";
 import { generateRouteOverlays } from "./utils/routeOverlay";
+import { generateIsochrones } from "./utils/isochrone";
 import "./App.css";
 
 function App() {
@@ -88,6 +89,14 @@ function App() {
     return generateRouteOverlays(lines, reachableStations);
   }, [lines, reachableStations]);
 
+  // 等時線を生成（メモ化）
+  const isochrones = useMemo(() => {
+    if (reachableStations.length === 0) {
+      return [];
+    }
+    return generateIsochrones(reachableStations, searchCondition.maxTravelTime);
+  }, [reachableStations, searchCondition.maxTravelTime]);
+
   // 地図の中心座標を計算
   const mapCenter: [number, number] = selectedStation
     ? [selectedStation.lat, selectedStation.lng]
@@ -136,6 +145,7 @@ function App() {
             reachableStations={reachableStations}
             maxTravelTime={searchCondition.maxTravelTime}
             routeOverlays={routeOverlays}
+            isochrones={isochrones}
           />
         </div>
       </main>

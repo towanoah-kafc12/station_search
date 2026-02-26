@@ -12,10 +12,12 @@ import {
   useMap,
   CircleMarker,
   Polyline,
+  Polygon,
 } from "react-leaflet";
 import type { Station } from "../types";
 import type { ReachableStation } from "../types/ReachableStation";
 import type { RouteOverlay } from "../types/RouteOverlay";
+import type { Isochrone } from "../types/Isochrone";
 import { getTravelTimeColorHex } from "../utils/colorScale";
 import "leaflet/dist/leaflet.css";
 import "./MapComponent.css";
@@ -40,6 +42,7 @@ interface MapComponentProps {
   reachableStations: ReachableStation[]; // 到達可能駅リスト
   maxTravelTime: number; // 最大移動時間（色分けに使用）
   routeOverlays: RouteOverlay[]; // 路線オーバーレイ
+  isochrones: Isochrone[]; // 等時線ポリゴン
 }
 
 // 地図の中心を更新し、到達可能駅が全て表示されるようズームレベルを調整するコンポーネント
@@ -96,6 +99,7 @@ export function MapComponent({
   reachableStations,
   maxTravelTime,
   routeOverlays,
+  isochrones,
 }: MapComponentProps) {
   return (
     <div className="map-component">
@@ -113,6 +117,26 @@ export function MapComponent({
           reachableStations={reachableStations}
           departureStation={departureStation}
         />
+        {/* 等時線ポリゴン（最も下のレイヤー） */}
+        {isochrones.map((isochrone) => (
+          <Polygon
+            key={`isochrone-${isochrone.timeMinutes}`}
+            positions={isochrone.polygon}
+            pathOptions={{
+              fillColor: isochrone.color,
+              fillOpacity: 0.2,
+              color: isochrone.color,
+              weight: 2,
+              opacity: 0.5,
+            }}
+          >
+            <Popup>
+              <div>
+                <strong>{isochrone.timeMinutes}分圏内</strong>
+              </div>
+            </Popup>
+          </Polygon>
+        ))}
         {/* 路線オーバーレイ（駅マーカーより下に描画） */}
         {routeOverlays.map((overlay) => (
           <Polyline
