@@ -58,7 +58,7 @@
     - fast-checkで任意の座標を持つ駅を生成し、選択後の地図中心座標が駅の緯度・経度と一致することを検証する
     - **Validates: Requirements 1.3, 1.4, 6.5**
 
-  - [ ] 1.9 App コンポーネントでの状態管理と結合
+  - [x] 1.9 App コンポーネントでの状態管理と結合
     - `src/App.tsx` で `selectedStation`, `searchCondition` の状態管理を実装する
     - StationSelector, ConditionPanel, MapComponent を結合する
     - 条件変更時の即時反映（状態更新）を実装する
