@@ -13,11 +13,13 @@
     - `src/types/` ディレクトリに `Station`, `Line`, `Operator`, `SearchCondition`, `ValidationResult` 等の型定義ファイルを作成する
     - _Requirements: 全体基盤_
 
-  - [ ] 1.2 ODPT APIクライアントとデータキャッシュの実装
-    - `src/services/odptApiClient.ts` を作成し、`fetchStations()`, `fetchLines()`, `fetchOperators()`, `fetchTrainTimetables()` を実装する
-    - `src/services/dataCache.ts` を作成し、localStorageベースのキャッシュ（24時間有効期限）を実装する
-    - APIキーを環境変数（`VITE_ODPT_API_KEY`）から読み込む設定を追加する
-    - APIエラー時のエラーハンドリング（リトライボタン、キャッシュフォールバック）を実装する
+  - [ ] 1.2 GTFSデータ変換スクリプトとデータローダーの実装
+    - TokyoGTFSで生成したGTFSファイルを`data/gtfs/`に配置する前提で、ビルド時変換スクリプト`scripts/convertGtfs.ts`を作成する
+    - `stops.txt` → `public/data/stations.json`、`routes.txt` + `agency.txt` → `public/data/lines.json` + `public/data/operators.json`に変換する
+    - `stop_times.txt` + `trips.txt`から駅間所要時間（中央値）を算出し、`lines.json`のsegmentsに反映する
+    - `parent_station`による駅の正規化（同一駅の束ね）を実装する
+    - `src/services/dataLoader.ts`を作成し、`public/data/`配下のJSONファイルをfetchで読み込む`loadStations()`, `loadLines()`, `loadOperators()`を実装する
+    - データ読み込み失敗時のエラーハンドリングを実装する
     - _Requirements: 1.1, 3.6_
 
   - [ ] 1.3 StationSelector コンポーネントの実装
@@ -77,9 +79,9 @@
   - 駅選択、条件入力、基本地図表示が動作することを確認する
 
 - [ ] 3. Phase 2: 到達可能範囲算出とマーカー表示
-  - [ ] 3.1 時刻表データからの駅間所要時間算出
-    - `src/services/timetableParser.ts` を作成する
-    - `calculateSegmentTravelTimes` 関数を実装し、ODPT時刻表データから隣接駅間の所要時間（中央値）を算出する
+  - [ ] 3.1 GTFSデータからの駅間所要時間算出の検証
+    - `scripts/convertGtfs.ts`の所要時間算出ロジックが正しく動作することを検証する
+    - `stop_times.txt`の`departure_time`/`arrival_time`差分から隣接駅間の所要時間（中央値）が正しく算出されることを確認する
     - _Requirements: 3.4_
 
   - [ ] 3.2 GraphService の実装（graphologyベース）

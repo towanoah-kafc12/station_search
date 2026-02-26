@@ -44,6 +44,13 @@
 - 複雑なワークフローや手順が発生した場合は `.kiro/skills/` にSkillとして切り出す
 - specドキュメント（requirements.md, design.md, tasks.md）も実装の進行に合わせて更新する
 
+## データソース
+
+- 鉄道データ: TokyoGTFS（https://github.com/MKuranowski/TokyoGTFS）で生成したGTFSファイル
+- GTFSファイルは `data/gtfs/` に配置し、`scripts/convertGtfs.ts` でアプリ用JSONに変換
+- 変換後のJSONは `public/data/` に配置（stations.json, lines.json, operators.json）
+- GTFSデータのライセンス: MIT License (Copyright (c) 2019-2025 Akihiko Kusanagi)
+
 ## 参照ドキュメント
 
 - 要件定義: `.kiro/specs/station-reachability-map/requirements.md`
