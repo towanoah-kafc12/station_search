@@ -1,0 +1,9 @@
+[
+  {
+    "id": "JR_East",
+    "name": "JR東日本",
+    "lineIds": [
+      "yamanote"
+    ]
+  }
+]

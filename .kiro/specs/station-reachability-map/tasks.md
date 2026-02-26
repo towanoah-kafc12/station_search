@@ -13,7 +13,7 @@
     - `src/types/` ディレクトリに `Station`, `Line`, `Operator`, `SearchCondition`, `ValidationResult` 等の型定義ファイルを作成する
     - _Requirements: 全体基盤_
 
-  - [ ] 1.2 GTFSデータ変換スクリプトとデータローダーの実装
+  - [x] 1.2 GTFSデータ変換スクリプトとデータローダーの実装
     - TokyoGTFSで生成したGTFSファイルを`data/gtfs/`に配置する前提で、ビルド時変換スクリプト`scripts/convertGtfs.ts`を作成する
     - `stops.txt` → `public/data/stations.json`、`routes.txt` + `agency.txt` → `public/data/lines.json` + `public/data/operators.json`に変換する
     - `stop_times.txt` + `trips.txt`から駅間所要時間（中央値）を算出し、`lines.json`のsegmentsに反映する

@@ -1,0 +1,93 @@
+[
+  {
+    "id": "yamanote",
+    "name": "山手線",
+    "operatorId": "JR_East",
+    "color": "#9ACD32",
+    "stationIds": [
+      "tokyo",
+      "yurakucho",
+      "shimbashi",
+      "shibuya",
+      "shinjuku",
+      "ikebukuro"
+    ],
+    "segments": [
+      {
+        "fromStationId": "tokyo",
+        "toStationId": "yurakucho",
+        "travelTime": 2,
+        "coordinates": [
+          [
+            139.7671,
+            35.6812
+          ],
+          [
+            139.763,
+            35.6751
+          ]
+        ]
+      },
+      {
+        "fromStationId": "yurakucho",
+        "toStationId": "shimbashi",
+        "travelTime": 2,
+        "coordinates": [
+          [
+            139.763,
+            35.6751
+          ],
+          [
+            139.7576,
+            35.6658
+          ]
+        ]
+      },
+      {
+        "fromStationId": "shimbashi",
+        "toStationId": "shibuya",
+        "travelTime": 15,
+        "coordinates": [
+          [
+            139.7576,
+            35.6658
+          ],
+          [
+            139.7016,
+            35.658
+          ]
+        ]
+      },
+      {
+        "fromStationId": "shibuya",
+        "toStationId": "shinjuku",
+        "travelTime": 7,
+        "coordinates": [
+          [
+            139.7016,
+            35.658
+          ],
+          [
+            139.7006,
+            35.6896
+          ]
+        ]
+      },
+      {
+        "fromStationId": "shinjuku",
+        "toStationId": "ikebukuro",
+        "travelTime": 5,
+        "coordinates": [
+          [
+            139.7006,
+            35.6896
+          ],
+          [
+            139.7109,
+            35.7295
+          ]
+        ]
+      }
+    ]
+  }
+]
