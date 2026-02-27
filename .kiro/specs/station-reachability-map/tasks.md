@@ -161,8 +161,8 @@
   - Ensure all tests pass, ask the user if questions arise.
   - 路線オーバーレイと等時線が地図上に正しく描画されることを確認する
 
-- [ ] 7. Phase 4: 検索結果一覧と路線フィルタリング
-  - [ ] 7.1 ResultList コンポーネントの実装
+- [-] 7. Phase 4: 検索結果一覧と路線フィルタリング
+  - [-] 7.1 ResultList コンポーネントの実装
     - `src/components/ResultList.tsx` を作成する
     - 到達可能駅の一覧をリスト形式で表示する（駅名・路線名・移動時間・乗り換え回数）
     - `sortResults` 関数を `src/utils/sortResults.ts` に実装する

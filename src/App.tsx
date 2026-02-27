@@ -4,6 +4,7 @@ import type { ReachableStation } from "./types/ReachableStation";
 import { StationSelector } from "./components/StationSelector";
 import { ConditionPanel } from "./components/ConditionPanel";
 import { MapComponent } from "./components/MapComponent";
+import { ResultList } from "./components/ResultList";
 import { loadStations, loadLines } from "./services/dataLoader";
 import { buildGraph } from "./services/graphService";
 import { findReachableStations } from "./services/reachabilityEngine";
@@ -93,6 +94,12 @@ function App() {
     ? [selectedStation.lat, selectedStation.lng]
     : [35.6812, 139.7671]; // デフォルトは東京駅
 
+  // 駅クリック時のハンドラー（地図中心を移動）
+  const handleResultStationClick = (result: ReachableStation) => {
+    // 地図の中心を該当駅に移動（MapComponentのcenterプロパティを更新）
+    setSelectedStation(result.station);
+  };
+
   if (loading) {
     return (
       <div className="app">
@@ -136,6 +143,13 @@ function App() {
             reachableStations={reachableStations}
             maxTravelTime={searchCondition.maxTravelTime}
             routeOverlays={routeOverlays}
+          />
+        </div>
+        <div className="result-panel">
+          <ResultList
+            results={reachableStations}
+            lines={lines}
+            onStationClick={handleResultStationClick}
           />
         </div>
       </main>
