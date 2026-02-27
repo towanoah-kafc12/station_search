@@ -1,11 +1,11 @@
 import { useState, useEffect, useMemo } from "react";
-import type { Station, SearchCondition, Line } from "./types";
+import type { Station, SearchCondition, Line, Operator } from "./types";
 import type { ReachableStation } from "./types/ReachableStation";
 import { StationSelector } from "./components/StationSelector";
 import { ConditionPanel } from "./components/ConditionPanel";
 import { MapComponent } from "./components/MapComponent";
 import { ResultList } from "./components/ResultList";
-import { loadStations, loadLines } from "./services/dataLoader";
+import { loadStations, loadLines, loadOperators } from "./services/dataLoader";
 import { buildGraph } from "./services/graphService";
 import { findReachableStations } from "./services/reachabilityEngine";
 import { generateRouteOverlays } from "./utils/routeOverlay";
@@ -14,6 +14,7 @@ import "./App.css";
 function App() {
   const [stations, setStations] = useState<Station[]>([]);
   const [lines, setLines] = useState<Line[]>([]);
+  const [operators, setOperators] = useState<Operator[]>([]);
   const [selectedStation, setSelectedStation] = useState<Station | null>(null);
   const [searchCondition, setSearchCondition] = useState<SearchCondition>({
     maxTravelTime: 30,
@@ -28,12 +29,14 @@ function App() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const [stationsData, linesData] = await Promise.all([
+        const [stationsData, linesData, operatorsData] = await Promise.all([
           loadStations(),
           loadLines(),
+          loadOperators(),
         ]);
         setStations(stationsData);
         setLines(linesData);
+        setOperators(operatorsData);
         setError(null);
       } catch (err) {
         setError(
@@ -134,6 +137,8 @@ function App() {
           <ConditionPanel
             condition={searchCondition}
             onConditionChange={handleConditionChange}
+            availableLines={lines}
+            availableOperators={operators}
           />
         </div>
         <div className="map-container">

@@ -65,3 +65,121 @@
   background-color: rgba(255, 68, 68, 0.1);
   border-radius: 4px;
 }
+
+/* 路線フィルタセクション */
+.condition-panel-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #333;
+}
+
+.condition-panel-toggle {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: left;
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+  border: 1px solid #444;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.condition-panel-toggle:hover {
+  background-color: #333;
+  border-color: #555;
+}
+
+.line-filter {
+  margin-top: 1rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.line-group {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background-color: #2a2a2a;
+  border: 1px solid #333;
+  border-radius: 4px;
+}
+
+.line-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #444;
+}
+
+.line-group-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #e0e0e0;
+}
+
+.line-group-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.line-group-button {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+  background-color: #444;
+  color: #e0e0e0;
+  border: 1px solid #555;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.line-group-button:hover:not(:disabled) {
+  background-color: #555;
+  border-color: #666;
+}
+
+.line-group-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.line-group-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.line-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: #1a1a1a;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.line-checkbox-label:hover {
+  background-color: #333;
+}
+
+.line-checkbox-label input[type="checkbox"] {
+  cursor: pointer;
+}
+
+.line-color-indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+  border: 1px solid #555;
+}
+
+.line-name {
+  font-size: 0.85rem;
+  color: #e0e0e0;
+}

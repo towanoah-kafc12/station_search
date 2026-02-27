@@ -162,7 +162,7 @@
   - 路線オーバーレイと等時線が地図上に正しく描画されることを確認する
 
 - [-] 7. Phase 4: 検索結果一覧と路線フィルタリング
-  - [-] 7.1 ResultList コンポーネントの実装
+  - [x] 7.1 ResultList コンポーネントの実装
     - `src/components/ResultList.tsx` を作成する
     - 到達可能駅の一覧をリスト形式で表示する（駅名・路線名・移動時間・乗り換え回数）
     - `sortResults` 関数を `src/utils/sortResults.ts` に実装する
@@ -180,7 +180,7 @@
     - fast-checkで任意の`ReachableStation`を生成し、ポップアップとリスト項目に駅名・移動時間・乗り換え回数（リストはさらに路線名）が全て含まれることを検証する
     - **Validates: Requirements 4.5, 6.2**
 
-  - [ ] 7.4 ConditionPanel に路線フィルタリング機能を追加
+  - [-] 7.4 ConditionPanel に路線フィルタリング機能を追加
     - 利用可能な路線一覧をチェックボックス付きで表示する
     - `src/utils/groupLinesByOperator.ts` を作成し、路線を事業者ごとにグループ化する関数を実装する
     - 事業者単位の一括選択・解除機能を実装する
