@@ -161,7 +161,7 @@
   - Ensure all tests pass, ask the user if questions arise.
   - 路線オーバーレイと等時線が地図上に正しく描画されることを確認する
 
-- [-] 7. Phase 4: 検索結果一覧と路線フィルタリング
+- [x] 7. Phase 4: 検索結果一覧と路線フィルタリング
   - [x] 7.1 ResultList コンポーネントの実装
     - `src/components/ResultList.tsx` を作成する
     - 到達可能駅の一覧をリスト形式で表示する（駅名・路線名・移動時間・乗り換え回数）
@@ -180,7 +180,7 @@
     - fast-checkで任意の`ReachableStation`を生成し、ポップアップとリスト項目に駅名・移動時間・乗り換え回数（リストはさらに路線名）が全て含まれることを検証する
     - **Validates: Requirements 4.5, 6.2**
 
-  - [-] 7.4 ConditionPanel に路線フィルタリング機能を追加
+  - [x] 7.4 ConditionPanel に路線フィルタリング機能を追加
     - 利用可能な路線一覧をチェックボックス付きで表示する
     - `src/utils/groupLinesByOperator.ts` を作成し、路線を事業者ごとにグループ化する関数を実装する
     - 事業者単位の一括選択・解除機能を実装する
@@ -198,7 +198,7 @@
     - fast-checkで任意の事業者を生成し、一括選択後は全路線が選択状態、一括解除後は全路線が非選択状態となることを検証する
     - **Validates: Requirements 7.7**
 
-  - [ ] 7.7 路線フィルタの到達可能範囲エンジンへの反映
+  - [x] 7.7 路線フィルタの到達可能範囲エンジンへの反映
     - `excludedLines` パラメータを `findReachableStations` に渡し、除外路線を使わない探索を実装する
     - 路線フィルタ変更時の再計算を結合する
     - _Requirements: 7.4, 7.5_
@@ -208,7 +208,7 @@
     - fast-checkで任意のグラフと除外路線セットを生成し、`findReachableStations`の結果経路に除外路線IDが含まれないことを検証する
     - **Validates: Requirements 7.5**
 
-- [ ] 8. 最終チェックポイント
+- [x] 8. 最終チェックポイント
   - Ensure all tests pass, ask the user if questions arise.
   - 全フェーズの機能が統合され、駅選択→条件指定→到達可能範囲表示→一覧確認→路線フィルタリングの全フローが動作することを確認する
 
