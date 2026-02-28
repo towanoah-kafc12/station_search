@@ -1,9 +1,418 @@
 [
   {
-    "id": "JR_East",
+    "id": "ChibaMonorail",
+    "name": "千葉都市モノレール",
+    "lineIds": [
+      "ChibaMonorail.Line1",
+      "ChibaMonorail.Line2"
+    ]
+  },
+  {
+    "id": "Chichibu",
+    "name": "秩父鉄道",
+    "lineIds": [
+      "Chichibu.Chichibu"
+    ]
+  },
+  {
+    "id": "Choshi",
+    "name": "銚子電気鉄道",
+    "lineIds": [
+      "Choshi.Choshi"
+    ]
+  },
+  {
+    "id": "Enoden",
+    "name": "江ノ島電鉄",
+    "lineIds": [
+      "Enoden.Enoden"
+    ]
+  },
+  {
+    "id": "Fujikyu",
+    "name": "富士急行",
+    "lineIds": [
+      "Fujikyu.Fujikyu"
+    ]
+  },
+  {
+    "id": "Hitachinaka",
+    "name": "ひたちなか海浜鉄道",
+    "lineIds": [
+      "Hitachinaka.Minato"
+    ]
+  },
+  {
+    "id": "Hokuso",
+    "name": "北総鉄道",
+    "lineIds": [
+      "Hokuso.Hokuso"
+    ]
+  },
+  {
+    "id": "Isumi",
+    "name": "いすみ鉄道",
+    "lineIds": [
+      "Isumi.Isumi"
+    ]
+  },
+  {
+    "id": "IzuHakone",
+    "name": "伊豆箱根鉄道",
+    "lineIds": [
+      "IzuHakone.Daiyuzan",
+      "IzuHakone.Sunzu"
+    ]
+  },
+  {
+    "id": "Izukyu",
+    "name": "伊豆急行",
+    "lineIds": [
+      "Izukyu.Izukyu"
+    ]
+  },
+  {
+    "id": "JR-Central",
+    "name": "JR東海",
+    "lineIds": [
+      "JR-Central.Gotemba",
+      "JR-Central.Tokaido"
+    ]
+  },
+  {
+    "id": "JR-East",
     "name": "JR東日本",
     "lineIds": [
-      "yamanote"
+      "JR-East.Chuo",
+      "JR-East.ChuoRapid",
+      "JR-East.ChuoSobuLocal",
+      "JR-East.Hachiko",
+      "JR-East.Ito",
+      "JR-East.Itsukaichi",
+      "JR-East.Joban",
+      "JR-East.JobanLocal",
+      "JR-East.JobanRapid",
+      "JR-East.Joetsu",
+      "JR-East.Karasuyama",
+      "JR-East.Kashima",
+      "JR-East.Kawagoe",
+      "JR-East.KeihinTohokuNegishi",
+      "JR-East.Keiyo",
+      "JR-East.Kururi",
+      "JR-East.Mito",
+      "JR-East.Musashino",
+      "JR-East.Nambu",
+      "JR-East.NambuBranch",
+      "JR-East.Narita",
+      "JR-East.NaritaAbikoBranch",
+      "JR-East.NaritaAirportBranch",
+      "JR-East.NaritaExpress",
+      "JR-East.Nikko",
+      "JR-East.Ome",
+      "JR-East.Ryomo",
+      "JR-East.Sagami",
+      "JR-East.SaikyoKawagoe",
+      "JR-East.ShonanShinjuku",
+      "JR-East.Sobu",
+      "JR-East.SobuRapid",
+      "JR-East.SotetsuDirect",
+      "JR-East.Sotobo",
+      "JR-East.Takasaki",
+      "JR-East.Togane",
+      "JR-East.Tokaido",
+      "JR-East.Tsurumi",
+      "JR-East.Uchibo",
+      "JR-East.Utsunomiya",
+      "JR-East.Yamanote",
+      "JR-East.Yokohama",
+      "JR-East.Yokosuka"
+    ]
+  },
+  {
+    "id": "KantoRailway",
+    "name": "関東鉄道",
+    "lineIds": [
+      "KantoRailway.Joso",
+      "KantoRailway.Ryugasaki"
+    ]
+  },
+  {
+    "id": "KashimaRinkai",
+    "name": "鹿島臨海鉄道",
+    "lineIds": [
+      "KashimaRinkai.OaraiKashima"
+    ]
+  },
+  {
+    "id": "Keikyu",
+    "name": "京浜急行電鉄",
+    "lineIds": [
+      "Keikyu.Airport",
+      "Keikyu.Daishi",
+      "Keikyu.Kurihama",
+      "Keikyu.Main",
+      "Keikyu.Zushi"
+    ]
+  },
+  {
+    "id": "Keio",
+    "name": "京王電鉄",
+    "lineIds": [
+      "Keio.Dobutsuen",
+      "Keio.Inokashira",
+      "Keio.Keibajo",
+      "Keio.Keio",
+      "Keio.KeioNew",
+      "Keio.Sagamihara",
+      "Keio.Takao"
+    ]
+  },
+  {
+    "id": "Keisei",
+    "name": "京成電鉄",
+    "lineIds": [
+      "Keisei.Chiba",
+      "Keisei.Chihara",
+      "Keisei.HigashiNarita",
+      "Keisei.Kanamachi",
+      "Keisei.Main",
+      "Keisei.Matsudo",
+      "Keisei.NaritaSkyAccess",
+      "Keisei.Oshiage",
+      "Keisei.Skyliner"
+    ]
+  },
+  {
+    "id": "Kominato",
+    "name": "小湊鉄道",
+    "lineIds": [
+      "Kominato.Kominato"
+    ]
+  },
+  {
+    "id": "MIR",
+    "name": "首都圏新都市鉄道",
+    "lineIds": [
+      "MIR.TsukubaExpress"
+    ]
+  },
+  {
+    "id": "Minatomirai",
+    "name": "横浜高速鉄道",
+    "lineIds": [
+      "Minatomirai.Minatomirai"
+    ]
+  },
+  {
+    "id": "Moka",
+    "name": "真岡鐵道",
+    "lineIds": [
+      "Moka.Moka"
+    ]
+  },
+  {
+    "id": "Odakyu",
+    "name": "小田急電鉄",
+    "lineIds": [
+      "Odakyu.Enoshima",
+      "Odakyu.Odawara",
+      "Odakyu.Tama"
+    ]
+  },
+  {
+    "id": "OdakyuHakone",
+    "name": "小田急箱根",
+    "lineIds": [
+      "OdakyuHakone.HakoneTozan"
+    ]
+  },
+  {
+    "id": "Ryutetsu",
+    "name": "流鉄",
+    "lineIds": [
+      "Ryutetsu.Nagareyama"
+    ]
+  },
+  {
+    "id": "SaitamaRailway",
+    "name": "埼玉高速鉄道",
+    "lineIds": [
+      "SaitamaRailway.SaitamaRailway"
+    ]
+  },
+  {
+    "id": "SaitamaTransit",
+    "name": "埼玉新都市交通",
+    "lineIds": [
+      "SaitamaTransit.NewShuttle"
+    ]
+  },
+  {
+    "id": "Seibu",
+    "name": "西武鉄道",
+    "lineIds": [
+      "Seibu.Haijima",
+      "Seibu.Ikebukuro",
+      "Seibu.Kokubunji",
+      "Seibu.Sayama",
+      "Seibu.SeibuChichibu",
+      "Seibu.SeibuYurakucho",
+      "Seibu.Seibuen",
+      "Seibu.Shinjuku",
+      "Seibu.Tamagawa",
+      "Seibu.Tamako",
+      "Seibu.Toshima",
+      "Seibu.Yamaguchi"
+    ]
+  },
+  {
+    "id": "Shibayama",
+    "name": "芝山鉄道",
+    "lineIds": [
+      "Shibayama.Shibayama"
+    ]
+  },
+  {
+    "id": "ShonanMonorail",
+    "name": "湘南モノレール",
+    "lineIds": [
+      "ShonanMonorail.ShonanMonorail"
+    ]
+  },
+  {
+    "id": "Sotetsu",
+    "name": "相模鉄道",
+    "lineIds": [
+      "Sotetsu.Izumino",
+      "Sotetsu.Main",
+      "Sotetsu.SotetsuShinYokohama"
+    ]
+  },
+  {
+    "id": "TWR",
+    "name": "東京臨海高速鉄道",
+    "lineIds": [
+      "TWR.Rinkai"
+    ]
+  },
+  {
+    "id": "TamaMonorail",
+    "name": "多摩都市モノレール",
+    "lineIds": [
+      "TamaMonorail.TamaMonorail"
+    ]
+  },
+  {
+    "id": "Tobu",
+    "name": "東武鉄道",
+    "lineIds": [
+      "Tobu.Daishi",
+      "Tobu.Isesaki",
+      "Tobu.Kameido",
+      "Tobu.Kinugawa",
+      "Tobu.Kiryu",
+      "Tobu.Koizumi",
+      "Tobu.KoizumiBranch",
+      "Tobu.Nikko",
+      "Tobu.Ogose",
+      "Tobu.Sano",
+      "Tobu.TobuSkytree",
+      "Tobu.TobuUrbanPark",
+      "Tobu.Tojo",
+      "Tobu.Utsunomiya"
+    ]
+  },
+  {
+    "id": "Toei",
+    "name": "都営地下鉄",
+    "lineIds": [
+      "Toei.Arakawa",
+      "Toei.Asakusa",
+      "Toei.Mita",
+      "Toei.NipporiToneri",
+      "Toei.Oedo",
+      "Toei.Shinjuku"
+    ]
+  },
+  {
+    "id": "TokyoMetro",
+    "name": "東京メトロ",
+    "lineIds": [
+      "TokyoMetro.Chiyoda",
+      "TokyoMetro.Fukutoshin",
+      "TokyoMetro.Ginza",
+      "TokyoMetro.Hanzomon",
+      "TokyoMetro.Hibiya",
+      "TokyoMetro.Marunouchi",
+      "TokyoMetro.MarunouchiBranch",
+      "TokyoMetro.Namboku",
+      "TokyoMetro.Tozai",
+      "TokyoMetro.Yurakucho"
+    ]
+  },
+  {
+    "id": "TokyoMonorail",
+    "name": "東京モノレール",
+    "lineIds": [
+      "TokyoMonorail.HanedaAirport"
+    ]
+  },
+  {
+    "id": "Tokyu",
+    "name": "東急電鉄",
+    "lineIds": [
+      "Tokyu.DenEnToshi",
+      "Tokyu.Ikegami",
+      "Tokyu.Kodomonokuni",
+      "Tokyu.Meguro",
+      "Tokyu.Oimachi",
+      "Tokyu.Setagaya",
+      "Tokyu.TokyuShinYokohama",
+      "Tokyu.TokyuTamagawa",
+      "Tokyu.Toyoko"
+    ]
+  },
+  {
+    "id": "ToyoRapid",
+    "name": "東葉高速鉄道",
+    "lineIds": [
+      "ToyoRapid.ToyoRapid"
+    ]
+  },
+  {
+    "id": "UtsunomiyaLightRail",
+    "name": "宇都宮ライトレール",
+    "lineIds": [
+      "UtsunomiyaLightRail.UtsunomiyaLightRail"
+    ]
+  },
+  {
+    "id": "Yamaman",
+    "name": "山万",
+    "lineIds": [
+      "Yamaman.Yukarigaoka"
+    ]
+  },
+  {
+    "id": "YokohamaMunicipal",
+    "name": "横浜市営地下鉄",
+    "lineIds": [
+      "YokohamaMunicipal.Blue",
+      "YokohamaMunicipal.Green"
+    ]
+  },
+  {
+    "id": "YokohamaSeaside",
+    "name": "横浜シーサイドライン",
+    "lineIds": [
+      "YokohamaSeaside.KanazawaSeaside"
+    ]
+  },
+  {
+    "id": "Yurikamome",
+    "name": "ゆりかもめ",
+    "lineIds": [
+      "Yurikamome.Yurikamome"
     ]
   }
 ]

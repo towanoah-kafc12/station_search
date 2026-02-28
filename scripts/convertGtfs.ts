@@ -1,356 +1,461 @@
 /**
  * GTFSデータをアプリケーション用JSONに変換するスクリプト
  *
+ * TokyoGTFSで生成した首都圏全路線のGTFSファイルを読み込み、
+ * アプリケーション用の静的JSONファイルに変換する。
+ *
  * 入力: data/gtfs/ ディレクトリ内のGTFSファイル群
  * 出力: public/data/ ディレクトリ内のJSONファイル群
+ *   - stations.json: 駅データ
+ *   - lines.json: 路線データ（segments含む）
+ *   - operators.json: 事業者データ
  */
 
 import * as fs from "fs";
 import * as path from "path";
+import * as readline from "readline";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-interface GtfsStop {
-  stop_id: string;
-  stop_name: string;
-  stop_lat: string;
-  stop_lon: string;
-  parent_station?: string;
+// --- 型定義 ---
+
+interface Station {
+  id: string;
+  name: string;
+  nameKana: string;
+  lat: number;
+  lng: number;
+  lineIds: string[];
+  operatorId: string;
 }
 
-interface GtfsRoute {
-  route_id: string;
-  route_short_name: string;
-  route_long_name: string;
-  route_color?: string;
-  agency_id: string;
+interface LineSegment {
+  fromStationId: string;
+  toStationId: string;
+  travelTime: number;
+  coordinates: [number, number][];
 }
 
-interface GtfsAgency {
-  agency_id: string;
-  agency_name: string;
+interface Line {
+  id: string;
+  name: string;
+  operatorId: string;
+  color: string;
+  stationIds: string[];
+  segments: LineSegment[];
 }
 
-interface GtfsTrip {
-  trip_id: string;
-  route_id: string;
-  service_id: string;
+interface Operator {
+  id: string;
+  name: string;
+  lineIds: string[];
 }
 
-interface GtfsStopTime {
-  trip_id: string;
-  arrival_time: string;
-  departure_time: string;
-  stop_id: string;
-  stop_sequence: string;
-}
+// --- CSVパーサー（ストリーミング対応） ---
 
-// CSVパーサー（簡易版）
-function parseCSV(content: string): Record<string, string>[] {
-  const lines = content.trim().split("\n");
-  if (lines.length === 0) return [];
-
-  const headers = lines[0].split(",").map((h) => h.trim());
-  const result: Record<string, string>[] = [];
-
-  for (let i = 1; i < lines.length; i++) {
-    const values = lines[i].split(",").map((v) => v.trim());
-    const row: Record<string, string> = {};
-    headers.forEach((header, index) => {
-      row[header] = values[index] || "";
-    });
-    result.push(row);
-  }
-
-  return result;
-}
-
-// 時刻文字列（HH:MM:SS）を分に変換
-function timeToMinutes(timeStr: string): number {
-  const parts = timeStr.split(":");
-  const hours = parseInt(parts[0], 10);
-  const minutes = parseInt(parts[1], 10);
-  return hours * 60 + minutes;
-}
-
-// 駅間所要時間を算出（中央値）
-function calculateTravelTimes(
-  stopTimes: GtfsStopTime[],
-  trips: GtfsTrip[],
-): Map<string, number> {
-  const travelTimeMap = new Map<string, number[]>();
-
-  // trip_idごとにstop_timesをグループ化
-  const tripStopTimes = new Map<string, GtfsStopTime[]>();
-  stopTimes.forEach((st) => {
-    if (!tripStopTimes.has(st.trip_id)) {
-      tripStopTimes.set(st.trip_id, []);
-    }
-    tripStopTimes.get(st.trip_id)!.push(st);
+/** CSVファイルを1行ずつ読み込み、各行をオブジェクトとして返す */
+async function parseCSVStream(
+  filePath: string,
+  onRow: (row: Record<string, string>) => void,
+): Promise<void> {
+  const rl = readline.createInterface({
+    input: fs.createReadStream(filePath, { encoding: "utf-8" }),
+    crlfDelay: Infinity,
   });
 
-  // 各tripで隣接駅間の所要時間を計算
-  tripStopTimes.forEach((stops, tripId) => {
-    stops.sort((a, b) => parseInt(a.stop_sequence) - parseInt(b.stop_sequence));
+  let headers: string[] | null = null;
 
-    for (let i = 0; i < stops.length - 1; i++) {
-      const from = stops[i];
-      const to = stops[i + 1];
+  for await (const line of rl) {
+    if (!headers) {
+      headers = parseCSVLine(line);
+      continue;
+    }
+    const values = parseCSVLine(line);
+    const row: Record<string, string> = {};
+    for (let i = 0; i < headers.length; i++) {
+      row[headers[i]] = values[i] || "";
+    }
+    onRow(row);
+  }
+}
 
-      const departTime = timeToMinutes(from.departure_time);
-      const arriveTime = timeToMinutes(to.arrival_time);
-      const travelTime = arriveTime - departTime;
+/** CSV行をパース（引用符対応） */
+function parseCSVLine(line: string): string[] {
+  const result: string[] = [];
+  let current = "";
+  let inQuotes = false;
 
-      if (travelTime > 0 && travelTime < 120) {
-        // 妥当な範囲のみ
-        const key = `${from.stop_id}-${to.stop_id}`;
-        if (!travelTimeMap.has(key)) {
-          travelTimeMap.set(key, []);
-        }
-        travelTimeMap.get(key)!.push(travelTime);
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (inQuotes) {
+      if (ch === '"' && line[i + 1] === '"') {
+        current += '"';
+        i++;
+      } else if (ch === '"') {
+        inQuotes = false;
+      } else {
+        current += ch;
+      }
+    } else {
+      if (ch === '"') {
+        inQuotes = true;
+      } else if (ch === ",") {
+        result.push(current.trim());
+        current = "";
+      } else {
+        current += ch;
       }
     }
-  });
-
-  // 中央値を計算
-  const result = new Map<string, number>();
-  travelTimeMap.forEach((times, key) => {
-    times.sort((a, b) => a - b);
-    const median = times[Math.floor(times.length / 2)];
-    result.set(key, median);
-  });
-
+  }
+  result.push(current.trim());
   return result;
 }
 
-async function convertGtfs() {
+// --- 時刻ユーティリティ ---
+
+/** 時刻文字列（HH:MM:SS）を分に変換 */
+function timeToMinutes(timeStr: string): number {
+  const parts = timeStr.split(":");
+  return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+}
+
+// --- メイン変換処理 ---
+
+async function convertGtfs(): Promise<void> {
   const gtfsDir = path.join(__dirname, "..", "data", "gtfs");
   const outputDir = path.join(__dirname, "..", "public", "data");
 
-  // 出力ディレクトリを作成
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
   }
 
+  if (!fs.existsSync(path.join(gtfsDir, "stops.txt"))) {
+    console.error("GTFSファイルが見つかりません: data/gtfs/stops.txt");
+    console.error(
+      "TokyoGTFSでGTFSデータを生成し、data/gtfs/に配置してください。",
+    );
+    process.exit(1);
+  }
+
   console.log("GTFSデータの変換を開始します...");
+  console.log(`入力: ${gtfsDir}`);
+  console.log(`出力: ${outputDir}`);
 
-  // GTFSファイルが存在しない場合はダミーデータを生成
-  if (!fs.existsSync(gtfsDir)) {
-    console.log("GTFSディレクトリが見つかりません。ダミーデータを生成します。");
-    generateDummyData(outputDir);
-    return;
-  }
+  // ========================================
+  // 1. agency.txt → 事業者マップ
+  // ========================================
+  console.log("\n[1/6] agency.txt を読み込み中...");
+  const agencyMap = new Map<string, { id: string; name: string }>();
 
-  // stops.txt を読み込み
-  const stopsPath = path.join(gtfsDir, "stops.txt");
-  if (!fs.existsSync(stopsPath)) {
-    console.log("stops.txtが見つかりません。ダミーデータを生成します。");
-    generateDummyData(outputDir);
-    return;
-  }
+  await parseCSVStream(path.join(gtfsDir, "agency.txt"), (row) => {
+    const name = row.agency_name.split(" ")[0]; // 日本語名のみ取得
+    agencyMap.set(row.agency_id, { id: row.agency_id, name });
+  });
+  console.log(`  → ${agencyMap.size} 事業者`);
 
-  const stopsContent = fs.readFileSync(stopsPath, "utf-8");
-  const gtfsStops = parseCSV(stopsContent) as unknown as GtfsStop[];
+  // ========================================
+  // 2. stops.txt → 駅データ
+  // ========================================
+  console.log("[2/6] stops.txt を読み込み中...");
 
-  // parent_stationで駅を正規化
-  const stationMap = new Map<string, any>();
-  gtfsStops.forEach((stop) => {
-    const stationId = stop.parent_station || stop.stop_id;
-    if (!stationMap.has(stationId)) {
-      stationMap.set(stationId, {
-        id: stationId,
-        name: stop.stop_name,
-        nameKana: stop.stop_name, // GTFSにはかな情報がないため同じ値を使用
-        lat: parseFloat(stop.stop_lat),
-        lng: parseFloat(stop.stop_lon),
+  // parent駅（location_type=1）と子駅（location_type=0）を分けて管理
+  const parentStations = new Map<string, Station>();
+  // 子stop_id → 親station_id のマッピング
+  const stopToStation = new Map<string, string>();
+
+  await parseCSVStream(path.join(gtfsDir, "stops.txt"), (row) => {
+    const locationType = parseInt(row.location_type || "0", 10);
+    const stopName = row.stop_name.split(" ")[0]; // 日本語名のみ
+
+    if (locationType === 1) {
+      // 親駅
+      parentStations.set(row.stop_id, {
+        id: row.stop_id,
+        name: stopName,
+        nameKana: stopName, // GTFSにかな情報なし
+        lat: parseFloat(row.stop_lat),
+        lng: parseFloat(row.stop_lon),
         lineIds: [],
-        operatorId: "unknown",
+        operatorId: "",
       });
+    } else if (locationType === 0) {
+      // 子駅 → 親駅へマッピング
+      const parentId = row.parent_station || row.stop_id;
+      stopToStation.set(row.stop_id, parentId);
+
+      // parent_stationが空の場合、この子駅自体を親駅として登録
+      if (!row.parent_station && !parentStations.has(row.stop_id)) {
+        parentStations.set(row.stop_id, {
+          id: row.stop_id,
+          name: stopName,
+          nameKana: stopName,
+          lat: parseFloat(row.stop_lat),
+          lng: parseFloat(row.stop_lon),
+          lineIds: [],
+          operatorId: "",
+        });
+      }
     }
   });
+  console.log(
+    `  → ${parentStations.size} 駅（正規化済み）, ${stopToStation.size} 子駅`,
+  );
 
-  const stations = Array.from(stationMap.values());
+  // ========================================
+  // 3. routes.txt → 路線データ
+  // ========================================
+  console.log("[3/6] routes.txt を読み込み中...");
 
-  // stations.jsonを出力
+  const routeMap = new Map<
+    string,
+    { id: string; name: string; operatorId: string; color: string }
+  >();
+
+  await parseCSVStream(path.join(gtfsDir, "routes.txt"), (row) => {
+    const name = row.route_long_name.split(" ")[0]; // 日本語名のみ
+    const color = row.route_color ? `#${row.route_color}` : "#888888";
+    routeMap.set(row.route_id, {
+      id: row.route_id,
+      name,
+      operatorId: row.agency_id,
+      color,
+    });
+  });
+  console.log(`  → ${routeMap.size} 路線`);
+
+  // ========================================
+  // 4. trips.txt → trip_id → route_id マッピング
+  // ========================================
+  console.log("[4/6] trips.txt を読み込み中...");
+
+  const tripToRoute = new Map<string, string>();
+
+  await parseCSVStream(path.join(gtfsDir, "trips.txt"), (row) => {
+    tripToRoute.set(row.trip_id, row.route_id);
+  });
+  console.log(`  → ${tripToRoute.size} trips`);
+
+  // ========================================
+  // 5. stop_times.txt → 駅間所要時間の算出
+  // ========================================
+  console.log(
+    "[5/6] stop_times.txt を読み込み中（大容量ファイル、しばらくお待ちください）...",
+  );
+
+  // route_id → { fromStationId-toStationId → travelTime[] }
+  const routeSegmentTimes = new Map<string, Map<string, number[]>>();
+  // route_id → Set<stationId>（駅の出現順序を記録）
+  const routeStationOrder = new Map<string, Map<string, number>>();
+
+  // trip単位で前の停車駅を記録
+  let prevTripId = "";
+  let prevStopId = "";
+  let prevDepartureTime = "";
+  let prevStopSeq = -1;
+  let processedLines = 0;
+
+  await parseCSVStream(path.join(gtfsDir, "stop_times.txt"), (row) => {
+    processedLines++;
+    if (processedLines % 500000 === 0) {
+      console.log(`  ... ${(processedLines / 1000000).toFixed(1)}M 行処理済み`);
+    }
+
+    const tripId = row.trip_id;
+    const stopId = row.stop_id;
+    const stopSeq = parseInt(row.stop_sequence, 10);
+    const routeId = tripToRoute.get(tripId);
+
+    if (!routeId) return;
+
+    // 親駅IDに正規化
+    const stationId = stopToStation.get(stopId) || stopId;
+
+    // 路線ごとの駅順序を記録
+    if (!routeStationOrder.has(routeId)) {
+      routeStationOrder.set(routeId, new Map());
+    }
+    const stationOrder = routeStationOrder.get(routeId)!;
+    if (!stationOrder.has(stationId)) {
+      stationOrder.set(stationId, stationOrder.size);
+    }
+
+    // 同一tripの連続する停車駅間の所要時間を計算
+    if (tripId === prevTripId && stopSeq === prevStopSeq + 1) {
+      const fromStation = stopToStation.get(prevStopId) || prevStopId;
+      const toStation = stationId;
+
+      if (fromStation !== toStation) {
+        const departTime = timeToMinutes(prevDepartureTime);
+        const arriveTime = timeToMinutes(row.arrival_time);
+        const travelTime = arriveTime - departTime;
+
+        if (travelTime > 0 && travelTime < 120) {
+          if (!routeSegmentTimes.has(routeId)) {
+            routeSegmentTimes.set(routeId, new Map());
+          }
+          const segments = routeSegmentTimes.get(routeId)!;
+          // 双方向を正規化（小さいID → 大きいID）
+          const key =
+            fromStation < toStation
+              ? `${fromStation}-${toStation}`
+              : `${toStation}-${fromStation}`;
+          const [normalFrom, normalTo] =
+            fromStation < toStation
+              ? [fromStation, toStation]
+              : [toStation, fromStation];
+
+          if (!segments.has(key)) {
+            segments.set(key, []);
+          }
+          segments.get(key)!.push(travelTime);
+        }
+      }
+    }
+
+    prevTripId = tripId;
+    prevStopId = stopId;
+    prevDepartureTime = row.departure_time;
+    prevStopSeq = stopSeq;
+  });
+
+  console.log(`  → ${processedLines} 行処理完了`);
+
+  // ========================================
+  // 6. データの組み立てとJSON出力
+  // ========================================
+  console.log("[6/6] JSONファイルを生成中...");
+
+  // 路線データの組み立て
+  const lines: Line[] = [];
+  const operatorLineIds = new Map<string, string[]>();
+
+  for (const [routeId, routeInfo] of routeMap) {
+    const segmentTimesMap = routeSegmentTimes.get(routeId);
+    if (!segmentTimesMap || segmentTimesMap.size === 0) continue;
+
+    const segments: LineSegment[] = [];
+    const stationIdSet = new Set<string>();
+
+    for (const [key, times] of segmentTimesMap) {
+      const [fromId, toId] = key.split("-");
+      // 中央値を計算
+      times.sort((a, b) => a - b);
+      const median = times[Math.floor(times.length / 2)];
+
+      stationIdSet.add(fromId);
+      stationIdSet.add(toId);
+
+      const fromStation = parentStations.get(fromId);
+      const toStation = parentStations.get(toId);
+
+      segments.push({
+        fromStationId: fromId,
+        toStationId: toId,
+        travelTime: median,
+        coordinates:
+          fromStation && toStation
+            ? [
+                [fromStation.lng, fromStation.lat],
+                [toStation.lng, toStation.lat],
+              ]
+            : [],
+      });
+    }
+
+    // 駅順序でソート
+    const stationOrder = routeStationOrder.get(routeId);
+    const stationIds = Array.from(stationIdSet).sort((a, b) => {
+      const orderA = stationOrder?.get(a) ?? Infinity;
+      const orderB = stationOrder?.get(b) ?? Infinity;
+      return orderA - orderB;
+    });
+
+    // 駅にlineIdとoperatorIdを設定
+    for (const sid of stationIds) {
+      const station = parentStations.get(sid);
+      if (station) {
+        if (!station.lineIds.includes(routeId)) {
+          station.lineIds.push(routeId);
+        }
+        if (!station.operatorId) {
+          station.operatorId = routeInfo.operatorId;
+        }
+      }
+    }
+
+    lines.push({
+      id: routeId,
+      name: routeInfo.name,
+      operatorId: routeInfo.operatorId,
+      color: routeInfo.color,
+      stationIds,
+      segments,
+    });
+
+    // 事業者ごとの路線IDを記録
+    if (!operatorLineIds.has(routeInfo.operatorId)) {
+      operatorLineIds.set(routeInfo.operatorId, []);
+    }
+    operatorLineIds.get(routeInfo.operatorId)!.push(routeId);
+  }
+
+  // 路線に所属する駅のみをフィルタ
+  const usedStationIds = new Set<string>();
+  for (const line of lines) {
+    for (const sid of line.stationIds) {
+      usedStationIds.add(sid);
+    }
+  }
+
+  const stations = Array.from(parentStations.values())
+    .filter((s) => usedStationIds.has(s.id))
+    .filter((s) => s.lineIds.length > 0);
+
+  // 事業者データの組み立て
+  const operators: Operator[] = [];
+  for (const [agencyId, agencyInfo] of agencyMap) {
+    const lineIds = operatorLineIds.get(agencyId);
+    if (lineIds && lineIds.length > 0) {
+      operators.push({
+        id: agencyId,
+        name: agencyInfo.name,
+        lineIds,
+      });
+    }
+  }
+
+  // JSON出力
   fs.writeFileSync(
     path.join(outputDir, "stations.json"),
     JSON.stringify(stations, null, 2),
   );
-  console.log(`✓ stations.json を生成しました (${stations.length}駅)`);
-
-  // 簡易的なlines.jsonとoperators.jsonを生成
-  const lines = [];
-  const operators = [{ id: "unknown", name: "不明", lineIds: [] }];
+  console.log(`\n✓ stations.json を生成しました (${stations.length} 駅)`);
 
   fs.writeFileSync(
     path.join(outputDir, "lines.json"),
     JSON.stringify(lines, null, 2),
   );
-  console.log(`✓ lines.json を生成しました`);
+  console.log(`✓ lines.json を生成しました (${lines.length} 路線)`);
 
   fs.writeFileSync(
     path.join(outputDir, "operators.json"),
     JSON.stringify(operators, null, 2),
   );
-  console.log(`✓ operators.json を生成しました`);
+  console.log(`✓ operators.json を生成しました (${operators.length} 事業者)`);
 
-  console.log("変換が完了しました！");
-}
-
-// ダミーデータ生成（開発用）
-function generateDummyData(outputDir: string) {
-  console.log("開発用ダミーデータを生成します...");
-
-  // JR山手線の主要駅のダミーデータ
-  const dummyStations = [
-    {
-      id: "tokyo",
-      name: "東京",
-      nameKana: "とうきょう",
-      lat: 35.6812,
-      lng: 139.7671,
-      lineIds: ["yamanote"],
-      operatorId: "JR_East",
-    },
-    {
-      id: "yurakucho",
-      name: "有楽町",
-      nameKana: "ゆうらくちょう",
-      lat: 35.6751,
-      lng: 139.763,
-      lineIds: ["yamanote"],
-      operatorId: "JR_East",
-    },
-    {
-      id: "shimbashi",
-      name: "新橋",
-      nameKana: "しんばし",
-      lat: 35.6658,
-      lng: 139.7576,
-      lineIds: ["yamanote"],
-      operatorId: "JR_East",
-    },
-    {
-      id: "shibuya",
-      name: "渋谷",
-      nameKana: "しぶや",
-      lat: 35.658,
-      lng: 139.7016,
-      lineIds: ["yamanote"],
-      operatorId: "JR_East",
-    },
-    {
-      id: "shinjuku",
-      name: "新宿",
-      nameKana: "しんじゅく",
-      lat: 35.6896,
-      lng: 139.7006,
-      lineIds: ["yamanote"],
-      operatorId: "JR_East",
-    },
-    {
-      id: "ikebukuro",
-      name: "池袋",
-      nameKana: "いけぶくろ",
-      lat: 35.7295,
-      lng: 139.7109,
-      lineIds: ["yamanote"],
-      operatorId: "JR_East",
-    },
-  ];
-
-  const dummyLines = [
-    {
-      id: "yamanote",
-      name: "山手線",
-      operatorId: "JR_East",
-      color: "#9ACD32",
-      stationIds: [
-        "tokyo",
-        "yurakucho",
-        "shimbashi",
-        "shibuya",
-        "shinjuku",
-        "ikebukuro",
-      ],
-      segments: [
-        {
-          fromStationId: "tokyo",
-          toStationId: "yurakucho",
-          travelTime: 2,
-          coordinates: [
-            [139.7671, 35.6812],
-            [139.763, 35.6751],
-          ],
-        },
-        {
-          fromStationId: "yurakucho",
-          toStationId: "shimbashi",
-          travelTime: 2,
-          coordinates: [
-            [139.763, 35.6751],
-            [139.7576, 35.6658],
-          ],
-        },
-        {
-          fromStationId: "shimbashi",
-          toStationId: "shibuya",
-          travelTime: 15,
-          coordinates: [
-            [139.7576, 35.6658],
-            [139.7016, 35.658],
-          ],
-        },
-        {
-          fromStationId: "shibuya",
-          toStationId: "shinjuku",
-          travelTime: 7,
-          coordinates: [
-            [139.7016, 35.658],
-            [139.7006, 35.6896],
-          ],
-        },
-        {
-          fromStationId: "shinjuku",
-          toStationId: "ikebukuro",
-          travelTime: 5,
-          coordinates: [
-            [139.7006, 35.6896],
-            [139.7109, 35.7295],
-          ],
-        },
-      ],
-    },
-  ];
-
-  const dummyOperators = [
-    { id: "JR_East", name: "JR東日本", lineIds: ["yamanote"] },
-  ];
-
-  fs.writeFileSync(
-    path.join(outputDir, "stations.json"),
-    JSON.stringify(dummyStations, null, 2),
-  );
-  console.log(`✓ stations.json を生成しました (${dummyStations.length}駅)`);
-
-  fs.writeFileSync(
-    path.join(outputDir, "lines.json"),
-    JSON.stringify(dummyLines, null, 2),
-  );
-  console.log(`✓ lines.json を生成しました (${dummyLines.length}路線)`);
-
-  fs.writeFileSync(
-    path.join(outputDir, "operators.json"),
-    JSON.stringify(dummyOperators, null, 2),
-  );
-  console.log(
-    `✓ operators.json を生成しました (${dummyOperators.length}事業者)`,
-  );
-
-  console.log("ダミーデータの生成が完了しました！");
+  // サマリー
+  const totalSegments = lines.reduce((sum, l) => sum + l.segments.length, 0);
+  console.log(`\n=== 変換完了 ===`);
+  console.log(`駅数: ${stations.length}`);
+  console.log(`路線数: ${lines.length}`);
+  console.log(`事業者数: ${operators.length}`);
+  console.log(`区間数: ${totalSegments}`);
 }
 
 // スクリプト実行
-convertGtfs().catch(console.error);
+convertGtfs().catch((err) => {
+  console.error("変換エラー:", err);
+  process.exit(1);
+});
