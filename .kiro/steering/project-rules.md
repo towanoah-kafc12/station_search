@@ -1,4 +1,10 @@
-# プロジェクトルール: 駅到達可能範囲マップ
+# プロジェクトルール: 駅到達可能範囲マップ（v2）
+
+## 状態
+
+- 現在: クリーンスレート（ソースコード・データ全削除済み）
+- バックアップ: `backup/phase-4-full-implementation` ブランチに v1 の全実装を保存
+- ノウハウ文書: `.kiro/docs/` に前回の知見を集約済み
 
 ## 言語・スタイル
 
@@ -10,10 +16,8 @@
 ## Git運用
 
 - 各タスク完了時に必ずコミット→プッシュする
-- バグ修正やリファクタリングなど、人間の一般的なコミット粒度で適宜コミットする
 - featureブランチで開発し、mainブランチへはリベースしてマージする
-  - `git rebase main` → `git checkout main` → `git merge --ff-only feature/xxx`
-- ブランチ名: `feature/phase-N-概要` （例: `feature/phase-1-setup`）
+- ブランチ名: `feature/概要` （例: `feature/graph-engine`）
 - コミットメッセージのプレフィックス: `feat:`, `fix:`, `test:`, `refactor:`, `chore:`, `docs:`
 
 ## コーディング規約
@@ -27,32 +31,22 @@
 
 ## テスト
 
-- プロパティベーステスト（fast-check）は設計書の正確性プロパティに対応させる
+- プロパティベーステスト（fast-check）を活用する
 - テストファイルは対象ファイルと同じディレクトリに `*.test.ts` / `*.test.tsx` として配置する
 - テスト実行: `npx vitest --run`
-- プロパティテストは最低100回のイテレーションで実行する
-
-## 段階的開発
-
-- Phase 1〜4の順序で段階的に実装する
-- 各フェーズのチェックポイントでユーザーに動作確認を求める
-- 初期開発（Phase 1〜2）ではJR山手線・中央線など1〜2路線に限定する
-
-## ドキュメント・ルールの最新化
-
-- このsteering fileの内容はプロジェクトの進行に合わせて都度最新化する
-- 複雑なワークフローや手順が発生した場合は `.kiro/skills/` にSkillとして切り出す
-- specドキュメント（requirements.md, design.md, tasks.md）も実装の進行に合わせて更新する
 
 ## データソース
 
-- 鉄道データ: TokyoGTFS（https://github.com/MKuranowski/TokyoGTFS）で生成したGTFSファイル
-- GTFSファイルは `data/gtfs/` に配置し、`scripts/convertGtfs.ts` でアプリ用JSONに変換
-- 変換後のJSONは `public/data/` に配置（stations.json, lines.json, operators.json）
+- 鉄道データ: TokyoGTFS（https://github.com/MKuranowski/TokyoGTFS）
+- GTFSファイルは `data/gtfs/` に配置（.gitignore済み、115MB超のファイルあり）
+- 変換後のJSONは `public/data/` に配置
 - GTFSデータのライセンス: MIT License (Copyright (c) 2019-2025 Akihiko Kusanagi)
+- データ取得・変換手順: `.kiro/docs/gtfs-data-guide.md` を参照
 
 ## 参照ドキュメント
 
-- 要件定義: `.kiro/specs/station-reachability-map/requirements.md`
-- 設計書: `.kiro/specs/station-reachability-map/design.md`
-- タスクリスト: `.kiro/specs/station-reachability-map/tasks.md`
+- ノウハウ集: `.kiro/docs/lessons-learned.md`
+- GTFSデータガイド: `.kiro/docs/gtfs-data-guide.md`
+- アーキテクチャリファレンス: `.kiro/docs/architecture-reference.md`
+- 要件定義: 未作成（新しい方針で作成予定）
+- 設計書: 未作成（新しい方針で作成予定）
